@@ -1,20 +1,41 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Subscriber } from './entities/subscriber.entity';
+import { CreateSubscriberDto } from './dto/create-subscriber.dto';
+import { UpdateSubscriberDto } from './dto/update-subscriber.dto';
 
 @Injectable()
 export class SubscribersService {
   constructor(
     @InjectRepository(Subscriber)
-    private subscribersRepository: Repository<Subscriber>,
+    private readonly subscriberRepo: Repository<Subscriber>,
   ) {}
 
-  async create(subscriberDto): Promise<Subscriber> {
-    return this.subscribersRepository.save(subscriberDto);
+  async createSubscriber(
+    createSubscriberDto: CreateSubscriberDto,
+  ): Promise<Subscriber> {
+    const subscriber = this.subscriberRepo.create(createSubscriberDto);
+    return this.subscriberRepo.save(subscriber);
   }
 
-  async getSubscriberDetails(id: number): Promise<Subscriber> {
-    return this.subscribersRepository.findOneBy({ subscriberId: id });
+  async findSubscriberById(id: number): Promise<Subscriber> {
+    const subscriber = await this.subscriberRepo.findOne({ where: { id } });
+    if (!subscriber) throw new NotFoundException('Subscriber not found');
+    return subscriber;
+  }
+
+  async updateSubscriber(
+    id: number,
+    updateSubscriberDto: UpdateSubscriberDto,
+  ): Promise<Subscriber> {
+    const subscriber = await this.findSubscriberById(id);
+    Object.assign(subscriber, updateSubscriberDto);
+    return this.subscriberRepo.save(subscriber);
+  }
+
+  async deleteSubscriber(id: number): Promise<void> {
+    const subscriber = await this.findSubscriberById(id);
+    await this.subscriberRepo.remove(subscriber);
   }
 }

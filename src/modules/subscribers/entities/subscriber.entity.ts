@@ -1,20 +1,39 @@
-import { User } from 'src/modules/users/entities/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+// subscribers.entity.ts
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+import { Card } from '../../cards/entities/card.entity';
+import { Structure } from '../../structures/entities/structure.entity';
 
-@Entity()
+@Entity('subscribers')
 export class Subscriber {
   @PrimaryGeneratedColumn()
-  subscriberId: number;
+  id: number;
 
   @ManyToOne(() => User, (user) => user.id)
   user: User;
 
-  @Column()
-  registrationNumber: string;
+  @OneToOne(() => Card, (card) => card.id)
+  card: Card;
+
+  @OneToOne(() => Structure, (structure) => structure.id)
+  structure: Structure;
 
   @Column()
-  status: string;
+  birthdate: Date;
 
   @Column()
-  consumption: number;
+  address: string;
+
+  @Column()
+  job: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }
