@@ -16,6 +16,7 @@ import { Module } from '@nestjs/common';
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
         autoLoadEntities: true,
+        ssl: true,
         synchronize: true, // Consider disabling in production
       }),
     }),
