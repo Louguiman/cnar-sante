@@ -55,25 +55,70 @@ export class ConsumptionService {
     warrantyId: number,
     amount: number,
   ): Promise<Consumption> {
-    const card = await this.cardRepo.findOne({ where: { id: cardId } });
+    const card = await this.cardRepo.findOne({
+      where: { id: cardId },
+      relations: ['category'], // Fetch category for total cap check
+    });
     if (!card) throw new BadRequestException('Card not found');
 
+    const warranty = await this.warrantyRepo.findOne({
+      where: { id: warrantyId },
+      relations: ['service', 'category'], // Fetch service and category for limit checks
+    });
+    if (!warranty) throw new BadRequestException('Warranty not found');
+
+    // 1️⃣ ✅ Check if card has enough balance
     if (card.balance < amount) {
       throw new BadRequestException('Insufficient card balance');
     }
 
-    const warranty = await this.warrantyRepo.findOne({
-      where: { id: warrantyId },
-    });
-    if (!warranty) throw new BadRequestException('Warranty not found');
-
-    if (warranty.limit < amount) {
-      throw new BadRequestException('Exceeds warranty coverage limit');
+    // 2️⃣ ✅ Check if the amount exceeds the warranty limit
+    if (warranty.limit && amount > warranty.limit) {
+      throw new BadRequestException(
+        `Exceeds warranty coverage limit (${warranty.limit} FCFA per act)`,
+      );
     }
 
-    card.balance -= amount;
+    // 3️⃣ ✅ Check total spent on this warranty for the year
+    const yearStart = new Date(new Date().getFullYear(), 0, 1); // First day of the year
 
+    const totalSpentOnWarranty = await this.consumptionRepo
+      .createQueryBuilder('consumption')
+      .where('consumption.cardId = :cardId', { cardId })
+      .andWhere('consumption.warrantyId = :warrantyId', { warrantyId })
+      .andWhere('consumption.createdAt >= :yearStart', { yearStart })
+      .select('SUM(consumption.amount)', 'total')
+      .getRawOne();
+
+    const totalSpent = totalSpentOnWarranty?.total || 0;
+    if (warranty.limit && totalSpent + amount > warranty.limit) {
+      throw new BadRequestException(
+        `This warranty has an annual limit of ${warranty.limit} FCFA`,
+      );
+    }
+
+    // 4️⃣ ✅ Check category-level cap (200,000 FCFA for minors, 500,000+ for adults)
+    const totalSpentOnCard = await this.consumptionRepo
+      .createQueryBuilder('consumption')
+      .where('consumption.cardId = :cardId', { cardId })
+      .andWhere('consumption.createdAt >= :yearStart', { yearStart })
+      .select('SUM(consumption.amount)', 'total')
+      .getRawOne();
+
+    const totalSpentThisYear = totalSpentOnCard?.total || 0;
+    const categoryLimit = card.category.name === 'Mineur' ? 200000 : 500000;
+
+    if (totalSpentThisYear + amount > categoryLimit) {
+      throw new BadRequestException(
+        `Annual spending cap reached (${categoryLimit} FCFA)`,
+      );
+    }
+
+    // 5️⃣ ✅ Deduct amount from card balance
+    card.balance -= amount;
     await this.cardRepo.save(card);
+
+    // 6️⃣ ✅ Log the consumption
     const consumption = this.consumptionRepo.create({
       card,
       warranty,

@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import { Logger } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 import { winstonConfig } from './config/winston.config';
+import { SeedService } from './modules/database/seed.service';
 dotenv.config();
 
 async function bootstrap() {
@@ -39,6 +40,10 @@ async function bootstrap() {
   // Global validation pipe
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new LoggingInterceptor());
+
+  // Run database seed
+  const seedService = app.get(SeedService);
+  await seedService.onModuleInit();
 
   const config = new DocumentBuilder()
     .setTitle('Djiguiya Health Cards API')

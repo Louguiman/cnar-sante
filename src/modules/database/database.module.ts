@@ -2,6 +2,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { AppConfigModule } from '../config/config.module';
 import { Module } from '@nestjs/common';
+import { Category } from '../categories/entities/category.entity';
+import { Service } from '../services/entities/service.entity';
+import { Warranty } from '../warranties/entities/warranty.entity';
+import { SeedService } from './seed.service';
 
 @Module({
   imports: [
@@ -20,6 +24,9 @@ import { Module } from '@nestjs/common';
         synchronize: true, // Consider disabling in production
       }),
     }),
+    TypeOrmModule.forFeature([Category, Service, Warranty]),
   ],
+  providers: [SeedService],
+  exports: [SeedService],
 })
 export class DatabaseModule {}
