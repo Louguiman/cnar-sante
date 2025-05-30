@@ -21,6 +21,10 @@ export class CategoriesService {
     return category;
   }
 
+  async findAllCategories(): Promise<Category[]> {
+    return this.categoryRepo.find();
+  }
+
   async updateCategory(
     id: number,
     categoryData: Partial<Category>,

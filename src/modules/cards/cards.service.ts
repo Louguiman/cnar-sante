@@ -25,6 +25,10 @@ export class CardsService {
     return card;
   }
 
+  async findAllCards(): Promise<Card[]> {
+    return this.cardRepo.find();
+  }
+
   async updateCard(id: number, cardData: Partial<Card>): Promise<Card> {
     const card = await this.findCardById(id);
     Object.assign(card, cardData);

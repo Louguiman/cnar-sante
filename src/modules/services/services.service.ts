@@ -22,6 +22,10 @@ export class ServicesService {
     return service;
   }
 
+  async findAllServices(): Promise<Service[]> {
+    return this.serviceRepo.find();
+  }
+
   async updateService(
     id: number,
     serviceData: Partial<Service>,
