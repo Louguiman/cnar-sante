@@ -12,17 +12,30 @@ import { SeedService } from './seed.service';
     TypeOrmModule.forRootAsync({
       imports: [AppConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DATABASE_HOST'),
-        port: +configService.get<number>('DATABASE_PORT'),
-        username: configService.get<string>('DATABASE_USERNAME'),
-        password: configService.get<string>('DATABASE_PASSWORD'),
-        database: configService.get<string>('DATABASE_NAME'),
-        autoLoadEntities: true,
-        ssl: true,
-        synchronize: true, // Consider disabling in production
-      }),
+      useFactory: (configService: ConfigService) => {
+        const databaseUrl = configService.get<string>('DATABASE_URL');
+        if (databaseUrl) {
+          return {
+            type: 'postgres',
+            url: databaseUrl,
+            autoLoadEntities: true,
+            ssl: true,
+            synchronize: true, // Consider disabling synchronize in production
+          };
+        }
+        // Fallback to individual parameters if DATABASE_URL is not set
+        return {
+          type: 'postgres',
+          host: configService.get<string>('DATABASE_HOST'),
+          port: +configService.get<number>('DATABASE_PORT'),
+          username: configService.get<string>('DATABASE_USERNAME'),
+          password: configService.get<string>('DATABASE_PASSWORD'),
+          database: configService.get<string>('DATABASE_NAME'),
+          autoLoadEntities: true,
+          ssl: true, // Ensure ssl is also in fallback
+          synchronize: true, // Consider disabling synchronize in production
+        };
+      },
     }),
     TypeOrmModule.forFeature([Category, Service, Warranty]),
   ],
