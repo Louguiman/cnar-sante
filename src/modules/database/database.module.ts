@@ -6,9 +6,11 @@ import { Category } from '../categories/entities/category.entity';
 import { Service } from '../services/entities/service.entity';
 import { Warranty } from '../warranties/entities/warranty.entity';
 import { SeedService } from './seed.service';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
+    UsersModule, // Add this line
     TypeOrmModule.forRootAsync({
       imports: [AppConfigModule],
       inject: [ConfigService],
