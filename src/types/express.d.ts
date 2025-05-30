@@ -1,4 +1,4 @@
-import { UserPayload } from './auth/interfaces/user-payload.interface'; // Adjust the path if necessary
+import { UserPayload } from '../modules/auth/interfaces/user-payload.interface';
 
 declare global {
   namespace Express {

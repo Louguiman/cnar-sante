@@ -11,14 +11,7 @@ export const winstonConfig = {
     }),
   ),
   transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.printf(({ level, message, timestamp }) => {
-          return `${timestamp} [${level.toUpperCase()}]: ${message}`;
-        }),
-      ),
-    }),
+    new winston.transports.Console(), // Modified line
     new winston.transports.File({
       filename: 'logs/error.log',
       level: 'error',
