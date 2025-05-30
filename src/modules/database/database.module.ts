@@ -19,7 +19,7 @@ import { SeedService } from './seed.service';
             type: 'postgres',
             url: databaseUrl,
             autoLoadEntities: true,
-            ssl: true,
+            ssl: false,
             synchronize: true, // Consider disabling synchronize in production
           };
         }
