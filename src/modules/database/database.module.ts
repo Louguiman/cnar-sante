@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { Category } from '../categories/entities/category.entity';
 import { Service } from '../services/entities/service.entity';
 import { Warranty } from '../warranties/entities/warranty.entity';
+import { User } from '../users/entities/user.entity';
 import { SeedService } from './seed.service';
 import { UsersModule } from '../users/users.module';
 
@@ -39,7 +40,7 @@ import { UsersModule } from '../users/users.module';
         };
       },
     }),
-    TypeOrmModule.forFeature([Category, Service, Warranty]),
+    TypeOrmModule.forFeature([Category, Service, Warranty, User]), // Add User here
   ],
   providers: [SeedService],
   exports: [SeedService],
