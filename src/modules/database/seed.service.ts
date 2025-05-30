@@ -4,6 +4,9 @@ import { Repository } from 'typeorm';
 import { Category } from '../categories/entities/category.entity';
 import { Service } from '../services/entities/service.entity';
 import { Warranty } from '../warranties/entities/warranty.entity';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/entities/user.entity';
+import { Role } from '../../commons/enums/role.enum.ts';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -13,6 +16,8 @@ export class SeedService implements OnModuleInit {
     @InjectRepository(Category) private categoryRepo: Repository<Category>,
     @InjectRepository(Service) private serviceRepo: Repository<Service>,
     @InjectRepository(Warranty) private warrantyRepo: Repository<Warranty>,
+    @InjectRepository(User) private readonly userRepo: Repository<User>, // Add this
+    private readonly usersService: UsersService, // Add this
   ) {}
 
   async onModuleInit() {
@@ -20,6 +25,7 @@ export class SeedService implements OnModuleInit {
     await this.seedCategories();
     await this.seedServices();
     await this.seedWarranties();
+    await this.seedAdminUser(); // Add this line
     this.logger.log('Database seeding completed.');
   }
 
@@ -177,6 +183,37 @@ export class SeedService implements OnModuleInit {
       if (!exists) {
         await this.warrantyRepo.save(warranty);
         this.logger.log(`Inserted warranty: ${warranty.name}`);
+      }
+    }
+  }
+
+  private async seedAdminUser() {
+    const adminEmail = 'admin@example.com';
+    const adminExists = await this.userRepo.findOne({ where: { email: adminEmail } });
+
+    if (adminExists) {
+      this.logger.log(`Admin user with email ${adminEmail} already exists.`);
+      return;
+    }
+
+    const adminDetails: Parameters<UsersService['createUser']>[0] = {
+      name: 'Default Admin',
+      email: adminEmail,
+      password: 'SecurePassword123!', // Ensure this meets any password complexity rules if they exist
+      phone: '70000000', // Example Malian phone number
+      role: Role.Admin,
+    };
+
+    try {
+      const newAdmin = await this.usersService.createUser(adminDetails);
+      this.logger.log(`Successfully created admin user: ${newAdmin.email}`);
+    } catch (error) {
+      // Check if the error is a ConflictException from usersService.createUser
+      // (though findOne should prevent this for email, createUser might check other fields or have other issues)
+      if (error.name === 'ConflictException') {
+        this.logger.warn(`Conflict while trying to create admin user ${adminEmail}. It might have been created in a parallel process or there's another conflict: ${error.message}`);
+      } else {
+        this.logger.error(`Error creating admin user ${adminEmail}: ${error.message}`, error.stack);
       }
     }
   }
