@@ -26,6 +26,10 @@ export class StructuresService {
     return structure;
   }
 
+  async findAllStructures(): Promise<Structure[]> {
+    return this.structureRepo.find();
+  }
+
   async updateStructure(
     id: number,
     updateStructureDto: UpdateStructureDto,

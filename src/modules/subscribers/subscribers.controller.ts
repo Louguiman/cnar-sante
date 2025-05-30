@@ -8,7 +8,7 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiResponse, ApiOperation } from '@nestjs/swagger'; // Add ApiOperation
 import { SubscribersService } from './subscribers.service';
 import { CreateSubscriberDto } from './dto/create-subscriber.dto';
 import { UpdateSubscriberDto } from './dto/update-subscriber.dto';
@@ -29,6 +29,13 @@ export class SubscribersController {
     @Body() createSubscriberDto: CreateSubscriberDto,
   ): Promise<Subscriber> {
     return this.subscribersService.createSubscriber(createSubscriberDto);
+  }
+
+  @Get()
+  @ApiResponse({ status: 200, description: 'Successfully retrieved all subscribers.', type: [Subscriber] })
+  @ApiOperation({ summary: 'Retrieve all subscribers' })
+  getAllSubscribers(): Promise<Subscriber[]> {
+    return this.subscribersService.findAllSubscribers();
   }
 
   @Get(':id')
