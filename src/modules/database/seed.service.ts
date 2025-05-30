@@ -6,7 +6,7 @@ import { Service } from '../services/entities/service.entity';
 import { Warranty } from '../warranties/entities/warranty.entity';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/entities/user.entity';
-import { Role } from '../../commons/enums/role.enum.ts';
+import { Role } from '../../commons/enums/role.enum';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
