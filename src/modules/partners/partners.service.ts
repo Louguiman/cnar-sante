@@ -23,6 +23,10 @@ export class PartnersService {
     return partner;
   }
 
+  async findAllPartners(): Promise<Partner[]> {
+    return this.partnerRepo.find();
+  }
+
   async updatePartner(
     id: number,
     updatePartnerDto: UpdatePartnerDto,

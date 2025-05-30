@@ -40,6 +40,13 @@ export class ConsumptionController {
     return this.consumptionService.createConsumption(createConsumptionDto);
   }
 
+  @Get()
+  @ApiResponse({ status: 200, description: 'Successfully retrieved all consumptions.', type: [Consumption] })
+  @ApiOperation({ summary: 'Retrieve all consumptions' }) // Added for better Swagger UI
+  getAllConsumptions(): Promise<Consumption[]> {
+    return this.consumptionService.findAllConsumptions();
+  }
+
   @Get(':id')
   @ApiResponse({
     status: 200,

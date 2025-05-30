@@ -25,6 +25,10 @@ export class WarrantiesService {
     return warranty;
   }
 
+  async findAllWarranties(): Promise<Warranty[]> {
+    return this.warrantyRepo.find({ relations: ["service", "category"] }); // Added relations for context
+  }
+
   async updateWarranty(
     id: number,
     updateWarrantyDto: UpdateWarrantyDto,

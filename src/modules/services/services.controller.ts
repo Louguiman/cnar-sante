@@ -8,7 +8,7 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiResponse, ApiOperation } from '@nestjs/swagger'; // Add ApiOperation
 import { ServicesService } from './services.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
@@ -27,6 +27,13 @@ export class ServicesController {
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
   createService(@Body() createServiceDto: CreateServiceDto): Promise<Service> {
     return this.servicesService.createService(createServiceDto);
+  }
+
+  @Get()
+  @ApiResponse({ status: 200, description: 'Successfully retrieved all services.', type: [Service] })
+  @ApiOperation({ summary: 'Retrieve all services' }) // Added for better Swagger UI
+  getAllServices(): Promise<Service[]> {
+    return this.servicesService.findAllServices();
   }
 
   @Get(':id')

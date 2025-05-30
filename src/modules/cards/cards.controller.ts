@@ -36,6 +36,12 @@ export class CardsController {
     return this.cardsService.createCard(createCardDto);
   }
 
+  @Get()
+  @ApiResponse({ status: 200, description: 'Successfully retrieved all cards.', type: [Card] })
+  getAllCards(): Promise<Card[]> {
+    return this.cardsService.findAllCards();
+  }
+
   @Get(':id')
   @ApiResponse({ status: 200, description: 'Card successfully retrieved.' })
   @ApiResponse({ status: 404, description: 'Card not found.' })

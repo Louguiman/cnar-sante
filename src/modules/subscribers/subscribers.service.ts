@@ -25,6 +25,10 @@ export class SubscribersService {
     return subscriber;
   }
 
+  async findAllSubscribers(): Promise<Subscriber[]> {
+    return this.subscriberRepo.find();
+  }
+
   async updateSubscriber(
     id: number,
     updateSubscriberDto: UpdateSubscriberDto,

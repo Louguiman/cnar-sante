@@ -8,7 +8,7 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiResponse, ApiOperation } from '@nestjs/swagger'; // Add ApiOperation
 import { WarrantiesService } from './warranties.service';
 import { CreateWarrantyDto } from './dto/create-warranty.dto';
 import { UpdateWarrantyDto } from './dto/update-warranty.dto';
@@ -16,8 +16,7 @@ import { Warranty } from './entities/warranty.entity';
 import { JwtAuthGuard } from 'src/commons/guards/jwt.guard';
 
 @ApiTags('Warranties')
-@ApiBearerAuth()
-@ApiBearerAuth()
+@ApiBearerAuth() // Removed duplicate
 @UseGuards(JwtAuthGuard)
 @Controller('warranties')
 export class WarrantiesController {
@@ -30,6 +29,13 @@ export class WarrantiesController {
     @Body() createWarrantyDto: CreateWarrantyDto,
   ): Promise<Warranty> {
     return this.warrantiesService.createWarranty(createWarrantyDto);
+  }
+
+  @Get()
+  @ApiResponse({ status: 200, description: 'Successfully retrieved all warranties.', type: [Warranty] })
+  @ApiOperation({ summary: 'Retrieve all warranties' })
+  getAllWarranties(): Promise<Warranty[]> {
+    return this.warrantiesService.findAllWarranties();
   }
 
   @Get(':id')

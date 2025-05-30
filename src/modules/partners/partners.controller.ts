@@ -8,7 +8,7 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiResponse, ApiOperation } from '@nestjs/swagger'; // Add ApiOperation
 import { PartnersService } from './partners.service';
 import { CreatePartnerDto } from './dto/create-partner.dto';
 import { UpdatePartnerDto } from './dto/update-partner.dto';
@@ -16,8 +16,7 @@ import { Partner } from './entities/partner.entity';
 import { JwtAuthGuard } from 'src/commons/guards/jwt.guard';
 
 @ApiTags('Partners')
-@ApiBearerAuth()
-@ApiBearerAuth()
+@ApiBearerAuth() // Removed duplicate
 @UseGuards(JwtAuthGuard)
 @Controller('partners')
 export class PartnersController {
@@ -28,6 +27,13 @@ export class PartnersController {
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
   createPartner(@Body() createPartnerDto: CreatePartnerDto): Promise<Partner> {
     return this.partnersService.createPartner(createPartnerDto);
+  }
+
+  @Get()
+  @ApiResponse({ status: 200, description: 'Successfully retrieved all partners.', type: [Partner] })
+  @ApiOperation({ summary: 'Retrieve all partners' }) // Added for better Swagger UI
+  getAllPartners(): Promise<Partner[]> {
+    return this.partnersService.findAllPartners();
   }
 
   @Get(':id')

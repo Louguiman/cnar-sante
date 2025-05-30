@@ -36,6 +36,10 @@ export class ConsumptionService {
     return consumption;
   }
 
+  async findAllConsumptions(): Promise<Consumption[]> {
+    return this.consumptionRepo.find({ relations: ['card', 'warranty'] }); // Added relations for context
+  }
+
   async updateConsumption(
     id: number,
     updateConsumptionDto: UpdateConsumptionDto,

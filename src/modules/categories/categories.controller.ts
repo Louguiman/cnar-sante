@@ -36,6 +36,12 @@ export class CategoriesController {
     return this.categoriesService.createCategory(createCategoryDto);
   }
 
+  @Get()
+  @ApiResponse({ status: 200, description: 'Successfully retrieved all categories.', type: [Category] })
+  getAllCategories(): Promise<Category[]> {
+    return this.categoriesService.findAllCategories();
+  }
+
   @Get(':id')
   @ApiResponse({ status: 200, description: 'Category successfully retrieved.' })
   @ApiResponse({ status: 404, description: 'Category not found.' })
