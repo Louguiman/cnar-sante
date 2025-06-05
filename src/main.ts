@@ -38,6 +38,9 @@ async function bootstrap() {
   // });
   // app.use(doubleCsrfProtection);
   // Global validation pipe
+  app.enableCors({
+    origin: 'https://djiguiya.sankaretech.com',
+  });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new LoggingInterceptor());
 
