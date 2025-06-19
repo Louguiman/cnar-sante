@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import { Subscriber } from '../../subscribers/entities/subscriber.entity';
 import { Consumption } from '../../consumption/entities/consumption.entity';
@@ -40,8 +41,8 @@ export class Card {
   @OneToMany(() => Consumption, (consumption) => consumption.card)
   consumptions: Consumption[];
 
-  @OneToMany(() => Subscriber, (subscriber) => subscriber.card)
-  subscribers: Subscriber[];
+  @OneToOne(() => Subscriber, (subscriber) => subscriber.card)
+  subscriber: Subscriber[];
 
   @CreateDateColumn()
   createdAt: Date;

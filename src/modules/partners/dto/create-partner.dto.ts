@@ -10,7 +10,7 @@ export class CreatePartnerDto {
   @ApiProperty({ description: 'ID of the associated service' })
   @IsNotEmpty()
   @IsNumber()
-  serviceId: number;
+  serviceId?: number;
 
   @ApiProperty({ description: 'ID of the user who manages the partner' })
   @IsNotEmpty()

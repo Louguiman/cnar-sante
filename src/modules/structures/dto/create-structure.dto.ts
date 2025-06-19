@@ -8,6 +8,10 @@ export class CreateStructureDto {
   @IsString()
   name: string;
 
+  @ApiProperty({ description: 'Type of the structure' })
+  @IsString()
+  type?: string;
+
   @ApiProperty({ description: 'Address of the structure' })
   @IsNotEmpty()
   @IsString()

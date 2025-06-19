@@ -9,7 +9,12 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiResponse, ApiOperation } from '@nestjs/swagger'; // Add ApiOperation
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiResponse,
+  ApiOperation,
+} from '@nestjs/swagger'; // Add ApiOperation
 import { StructuresService } from './structures.service';
 import { CreateStructureDto } from './dto/create-structure.dto';
 import { UpdateStructureDto } from './dto/update-structure.dto';
@@ -33,7 +38,11 @@ export class StructuresController {
   }
 
   @Get()
-  @ApiResponse({ status: 200, description: 'Successfully retrieved all structures.', type: [Structure] })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved all structures.',
+    type: [Structure],
+  })
   @ApiOperation({ summary: 'Retrieve all structures' })
   getAllStructures(): Promise<Structure[]> {
     return this.structuresService.findAllStructures();

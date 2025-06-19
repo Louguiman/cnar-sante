@@ -18,8 +18,14 @@ export class Service {
   @Column()
   name: string;
 
-  @ManyToOne(() => Category, (category) => category.services)
+  @ManyToOne(() => Category, (category) => category.services, { eager: true })
   category: Category;
+
+  @Column('float')
+  limit: number;
+
+  @Column({ nullable: true })
+  limitType: string | null; // "per act", "per year", etc.
 
   @OneToMany(() => Warranty, (warranty) => warranty.service)
   warranties: Warranty[];

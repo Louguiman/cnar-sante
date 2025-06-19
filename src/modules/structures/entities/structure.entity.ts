@@ -17,10 +17,44 @@ export class Structure {
   name: string;
 
   @Column()
-  address: string;
-
   @OneToMany(() => Subscriber, (subscriber) => subscriber.structure)
   subscribers: Subscriber[];
+
+  @Column()
+  type?: string; // e.g., NGO, Foundation, Clinic, Hospital
+
+  @Column()
+  contactName?: string;
+
+  @Column()
+  contactEmail?: string;
+
+  @Column()
+  contactPhone?: string;
+
+  @Column()
+  website?: string;
+
+  @Column()
+  address?: string;
+
+  @Column()
+  city?: string;
+
+  @Column()
+  postalCode?: string;
+
+  @Column()
+  country?: string;
+
+  @Column()
+  notes?: string;
+
+  @Column()
+  fundingCapacity?: number; // Example field from implementation_plan.md
+
+  @Column()
+  isActive: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
