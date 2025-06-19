@@ -35,13 +35,13 @@ export class Card {
   @Column()
   status: boolean;
 
-  @ManyToOne(() => Category, (category) => category.id)
+  @ManyToOne(() => Category, (category) => category.id, { eager: true })
   category: Category;
 
   @OneToMany(() => Consumption, (consumption) => consumption.card)
   consumptions: Consumption[];
 
-  @OneToOne(() => Subscriber, (subscriber) => subscriber.card)
+  @OneToOne(() => Subscriber, (subscriber) => subscriber.card, { eager: true })
   subscriber: Subscriber[];
 
   @CreateDateColumn()

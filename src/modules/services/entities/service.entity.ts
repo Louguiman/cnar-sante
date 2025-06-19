@@ -24,6 +24,21 @@ export class Service {
   @Column('float')
   limit: number;
 
+  @Column('float')
+  coverageRate: number; // e.g., 100% des frais réels
+
+  @Column({ nullable: true })
+  description?: string; // Optional description of the service
+
+  @Column({ nullable: true })
+  notes?: string; // Optional notes about the service
+
+  @Column({ default: true })
+  isActive: boolean; // Indicates if the service is currently active
+
+  @Column({ nullable: true })
+  code: string | null; // Optional code for the service, e.g., a unique identifier
+
   @Column({ nullable: true })
   limitType: string | null; // "per act", "per year", etc.
 

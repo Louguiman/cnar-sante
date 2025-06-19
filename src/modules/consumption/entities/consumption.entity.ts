@@ -14,7 +14,7 @@ export class Consumption {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Card, (card) => card.id)
+  @ManyToOne(() => Card, (card) => card.id, { eager: true })
   card: Card;
 
   @ManyToOne(() => Warranty, (warranty) => warranty.id)

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsBoolean } from 'class-validator';
 import { Warranty } from 'src/modules/warranties/entities/warranty.entity';
 
 export class CreateServiceDto {
@@ -34,8 +34,8 @@ export class CreateServiceDto {
   code?: string; // Optional field for a unique code representing the service
 
   @ApiProperty({ description: 'Status of the service', required: false })
-  @IsString()
-  status?: string; // Optional field to indicate the status of the service (e.g., active, inactive)
+  @IsBoolean()
+  isActive?: boolean; // Optional field to indicate the status of the service (e.g., active, inactive)
 
   @ApiProperty({
     description: 'Warranties associated with the service',

@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   ManyToOne,
   OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Card } from '../../cards/entities/card.entity';
@@ -16,13 +17,14 @@ export class Subscriber {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @OneToOne(() => Card, (card) => card.id)
   card: Card;
 
-  @OneToOne(() => Structure, (structure) => structure.id)
+  @OneToOne(() => Structure, (structure) => structure.id, { eager: true })
   structure: Structure;
 
   @Column()

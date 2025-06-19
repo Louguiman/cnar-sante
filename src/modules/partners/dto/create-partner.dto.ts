@@ -21,4 +21,57 @@ export class CreatePartnerDto {
   @IsNotEmpty()
   @IsString()
   address: string;
+
+  @ApiProperty({ description: 'City of the partner' })
+  @IsNotEmpty()
+  @IsString()
+  city: string;
+
+  @ApiProperty({ description: 'Country of the partner' })
+  @IsNotEmpty()
+  @IsString()
+  country: string;
+
+  @ApiProperty({ description: 'Contact person at the partner' })
+  @IsNotEmpty()
+  @IsString()
+  contactPerson: string;
+
+  @ApiProperty({ description: 'Email of the partner', required: false })
+  @IsString()
+  email?: string;
+
+  @ApiProperty({ description: 'Phone number of the partner', required: false })
+  @IsString()
+  phone?: string;
+
+  @ApiProperty({ description: 'Type of the partner', required: false })
+  @IsString()
+  type: 'clinic' | 'laboratory' | 'pharmacy' | 'hospital' | 'other';
+
+  @ApiProperty({ description: 'Services of the partner', required: false })
+  @IsString()
+  services?: [];
+
+  @ApiProperty({ description: 'Description of the partner', required: false })
+  @IsString()
+  description?: string;
+
+  @ApiProperty({ description: 'Status of the partner', required: false })
+  @IsString()
+  status?: 'active' | 'pending' | 'inactive';
+
+  @ApiProperty({
+    description: 'Contract start date of the partner',
+    required: false,
+  })
+  @IsString()
+  contractStartDate?: string;
+
+  @ApiProperty({
+    description: 'Contract end date of the partner',
+    required: false,
+  })
+  @IsString()
+  contractEndDate?: string;
 }
