@@ -48,20 +48,20 @@ export class SeedService implements OnModuleInit {
 
   private async seedServices() {
     const services = [
-      { id: 1, name: 'Honoraires médicaux', categoryId: 1 },
-      { id: 2, name: 'Honoraires médicaux', categoryId: 2 },
-      { id: 3, name: 'Pharmacie', categoryId: 1 },
-      { id: 4, name: 'Pharmacie', categoryId: 2 },
-      { id: 5, name: 'Analyses', categoryId: 1 },
-      { id: 6, name: 'Analyses', categoryId: 2 },
-      { id: 7, name: 'Radios', categoryId: 1 },
-      { id: 8, name: 'Radios', categoryId: 2 },
-      { id: 9, name: 'Soins dentaires', categoryId: 1 },
-      { id: 10, name: 'Soins dentaires', categoryId: 2 },
-      { id: 11, name: 'Optique', categoryId: 1 },
-      { id: 12, name: 'Optique', categoryId: 2 },
-      { id: 13, name: 'Hospitalisation', categoryId: 1 },
-      { id: 14, name: 'Hospitalisation', categoryId: 2 },
+      { id: 1, name: 'Honoraires médicaux', categoryId: 1, coverageRate: 100 },
+      { id: 2, name: 'Honoraires médicaux', categoryId: 2, coverageRate: 100 },
+      { id: 3, name: 'Pharmacie', categoryId: 1, coverageRate: 100 },
+      { id: 4, name: 'Pharmacie', categoryId: 2, coverageRate: 100 },
+      { id: 5, name: 'Analyses', categoryId: 1, coverageRate: 100 },
+      { id: 6, name: 'Analyses', categoryId: 2, coverageRate: 100 },
+      { id: 7, name: 'Radios', categoryId: 1, coverageRate: 100 },
+      { id: 8, name: 'Radios', categoryId: 2, coverageRate: 100 },
+      { id: 9, name: 'Soins dentaires', categoryId: 1, coverageRate: 100 },
+      { id: 10, name: 'Soins dentaires', categoryId: 2, coverageRate: 100 },
+      { id: 11, name: 'Optique', categoryId: 1, coverageRate: 100 },
+      { id: 12, name: 'Optique', categoryId: 2, coverageRate: 100 },
+      { id: 13, name: 'Hospitalisation', categoryId: 1, coverageRate: 100 },
+      { id: 14, name: 'Hospitalisation', categoryId: 2, coverageRate: 100 },
     ];
 
     for (const service of services) {
@@ -189,7 +189,9 @@ export class SeedService implements OnModuleInit {
 
   private async seedAdminUser() {
     const adminEmail = 'admin@example.com';
-    const adminExists = await this.userRepo.findOne({ where: { email: adminEmail } });
+    const adminExists = await this.userRepo.findOne({
+      where: { email: adminEmail },
+    });
 
     if (adminExists) {
       this.logger.log(`Admin user with email ${adminEmail} already exists.`);
@@ -211,9 +213,14 @@ export class SeedService implements OnModuleInit {
       // Check if the error is a ConflictException from usersService.createUser
       // (though findOne should prevent this for email, createUser might check other fields or have other issues)
       if (error.name === 'ConflictException') {
-        this.logger.warn(`Conflict while trying to create admin user ${adminEmail}. It might have been created in a parallel process or there's another conflict: ${error.message}`);
+        this.logger.warn(
+          `Conflict while trying to create admin user ${adminEmail}. It might have been created in a parallel process or there's another conflict: ${error.message}`,
+        );
       } else {
-        this.logger.error(`Error creating admin user ${adminEmail}: ${error.message}`, error.stack);
+        this.logger.error(
+          `Error creating admin user ${adminEmail}: ${error.message}`,
+          error.stack,
+        );
       }
     }
   }

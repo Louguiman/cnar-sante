@@ -21,7 +21,7 @@ export class Service {
   @ManyToOne(() => Category, (category) => category.services, { eager: true })
   category: Category;
 
-  @Column('float')
+  @Column('float', { default: 0 })
   limit: number;
 
   @Column('float')
