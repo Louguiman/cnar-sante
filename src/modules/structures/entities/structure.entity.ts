@@ -16,7 +16,6 @@ export class Structure {
   @Column()
   name: string;
 
-  @Column()
   @OneToMany(() => Subscriber, (subscriber) => subscriber.structure)
   subscribers: Subscriber[];
 
