@@ -18,7 +18,6 @@ export class Subscriber {
   id: number;
 
   @ManyToOne(() => User, (user) => user.id, { eager: true })
-  @JoinColumn({ name: 'userId' })
   user: User;
 
   @OneToOne(() => Card, (card) => card.id)

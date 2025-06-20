@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { Service } from 'src/modules/services/entities/service.entity';
 
 export class CreatePartnerDto {
   @ApiProperty({ description: 'Name of the partner' })
@@ -51,7 +52,7 @@ export class CreatePartnerDto {
 
   @ApiProperty({ description: 'Services of the partner', required: false })
   @IsString()
-  services?: [];
+  services?: Service[];
 
   @ApiProperty({ description: 'Description of the partner', required: false })
   @IsString()
