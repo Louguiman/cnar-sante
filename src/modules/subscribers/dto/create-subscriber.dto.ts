@@ -1,11 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsString,
-  IsDate,
-  IsOptional,
-  IsNumber,
-} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsString, IsOptional, IsNumber } from 'class-validator';
 
 export class CreateSubscriberDto {
   @ApiProperty({ description: 'ID of the associated user' })
@@ -13,8 +7,8 @@ export class CreateSubscriberDto {
   @IsNumber()
   userId: number;
 
-  @ApiProperty({ description: 'ID of the associated card' })
-  @IsNotEmpty()
+  @ApiPropertyOptional({ description: 'ID of the associated card' })
+  @IsOptional()
   @IsNumber()
   cardId: number;
 
@@ -25,7 +19,7 @@ export class CreateSubscriberDto {
 
   @ApiProperty({ description: "Subscriber's birthdate" })
   @IsNotEmpty()
-  @IsDate()
+  @IsString()
   birthdate: Date;
 
   @ApiProperty({ description: "Subscriber's address" })

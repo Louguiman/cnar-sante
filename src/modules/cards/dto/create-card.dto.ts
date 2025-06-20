@@ -16,13 +16,13 @@ export class CreateCardDto {
 
   @ApiProperty({ description: 'Card creation date' })
   @IsNotEmpty()
-  @IsDate()
-  createDate: Date;
+  @IsString()
+  createDate: string;
 
   @ApiProperty({ description: 'Card expiration date' })
   @IsNotEmpty()
-  @IsDate()
-  expiryDate: Date;
+  @IsString()
+  expiryDate: string;
 
   @ApiProperty({ description: 'Initial balance on the card' })
   @IsNotEmpty()
