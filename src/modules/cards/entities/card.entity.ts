@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Subscriber } from '../../subscribers/entities/subscriber.entity';
 import { Consumption } from '../../consumption/entities/consumption.entity';
@@ -42,6 +43,7 @@ export class Card {
   consumptions: Consumption[];
 
   @OneToOne(() => Subscriber, (subscriber) => subscriber.card, { eager: true })
+  @JoinColumn({ name: 'subscriberId' })
   subscriber: Subscriber[];
 
   @CreateDateColumn()
