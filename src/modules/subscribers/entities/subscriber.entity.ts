@@ -21,9 +21,11 @@ export class Subscriber {
   user: User;
 
   @OneToOne(() => Card, (card) => card.id)
+  @JoinColumn()
   card: Card;
 
   @OneToOne(() => Structure, (structure) => structure.id, { eager: true })
+  @JoinColumn()
   structure: Structure;
 
   @Column()

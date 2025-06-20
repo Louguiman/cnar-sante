@@ -38,10 +38,10 @@ async function bootstrap() {
   // });
   // app.use(doubleCsrfProtection);
   // Global validation pipe
- 
-//TODO: USE IN PROD
-//app.enableCors({origin:'https://djiguiya.sankaretech.com', });
-app.enableCors();
+
+  //TODO: USE IN PROD
+  //app.enableCors({origin:'https://djiguiya.sankaretech.com', });
+  app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new LoggingInterceptor());
 
