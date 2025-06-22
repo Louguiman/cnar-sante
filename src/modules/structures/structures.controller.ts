@@ -8,12 +8,15 @@ import {
   Param,
   Body,
   UseGuards,
+  Query,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
   ApiBearerAuth,
   ApiResponse,
   ApiOperation,
+  ApiQuery,
 } from '@nestjs/swagger'; // Add ApiOperation
 import { StructuresService } from './structures.service';
 import { CreateStructureDto } from './dto/create-structure.dto';
@@ -73,5 +76,74 @@ export class StructuresController {
   @ApiResponse({ status: 404, description: 'Structure not found.' })
   deleteStructure(@Param('id') id: number): Promise<void> {
     return this.structuresService.deleteStructure(id);
+  }
+
+  @Get('search')
+  @ApiOperation({ summary: 'Search/filter structures' })
+  @ApiQuery({ name: 'city', required: false })
+  @ApiQuery({ name: 'type', required: false })
+  @ApiQuery({ name: 'isActive', required: false, type: Boolean })
+  searchStructures(
+    @Query('city') city?: string,
+    @Query('type') type?: string,
+    @Query('isActive', ParseBoolPipe) isActive?: boolean,
+  ): Promise<Structure[]> {
+    return this.structuresService.searchStructures({ city, type, isActive });
+  }
+
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'Get structures by user' })
+  getStructuresByUser(@Param('userId') userId: number): Promise<Structure[]> {
+    return this.structuresService.getStructuresByUser(userId);
+  }
+
+  @Patch(':id/activate')
+  @ApiOperation({ summary: 'Activate a structure' })
+  activateStructure(@Param('id') id: number): Promise<Structure> {
+    return this.structuresService.setStructureActive(id, true);
+  }
+
+  @Patch(':id/deactivate')
+  @ApiOperation({ summary: 'Deactivate a structure' })
+  deactivateStructure(@Param('id') id: number): Promise<Structure> {
+    return this.structuresService.setStructureActive(id, false);
+  }
+
+  @Get(':id/subscribers')
+  @ApiOperation({ summary: 'Get subscribers for a structure' })
+  getSubscribersForStructure(@Param('id') id: number) {
+    return this.structuresService.getSubscribersForStructure(id);
+  }
+
+  @Get(':id/users')
+  @ApiOperation({ summary: 'Get users for a structure' })
+  getUsersForStructure(@Param('id') id: number) {
+    return this.structuresService.getUsersForStructure(id);
+  }
+
+  @Post('import')
+  @ApiOperation({ summary: 'Bulk import structures (CSV/Excel)' })
+  importStructures() {
+    // Implementation stub
+    return this.structuresService.importStructures();
+  }
+
+  @Get('export')
+  @ApiOperation({ summary: 'Export all structures (CSV/Excel)' })
+  exportStructures() {
+    // Implementation stub
+    return this.structuresService.exportStructures();
+  }
+
+  @Get(':id/statistics')
+  @ApiOperation({ summary: 'Get statistics for a structure' })
+  getStructureStatistics(@Param('id') id: number) {
+    return this.structuresService.getStructureStatistics(id);
+  }
+
+  @Get('statistics')
+  @ApiOperation({ summary: 'Get global structures statistics' })
+  getGlobalStructuresStatistics() {
+    return this.structuresService.getGlobalStructuresStatistics();
   }
 }

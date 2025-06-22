@@ -6,16 +6,28 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Card } from './entities/card.entity';
+import { Category } from '../categories/entities/category.entity';
 
 @Injectable()
 export class CardsService {
   constructor(
     @InjectRepository(Card)
     private readonly cardRepo: Repository<Card>,
+    @InjectRepository(Category)
+    private readonly categoryRepo: Repository<Category>,
   ) {}
 
-  async createCard(cardData: Partial<Card>): Promise<Card> {
-    const card = this.cardRepo.create(cardData);
+  async createCard(
+    cardData: Partial<Card> & { categoryId?: number },
+  ): Promise<Card> {
+    let category = null;
+    if (cardData.categoryId) {
+      category = await this.categoryRepo.findOne({
+        where: { id: cardData.categoryId },
+      });
+      if (!category) throw new BadRequestException('Category not found');
+    }
+    const card = this.cardRepo.create({ ...cardData, category });
     return this.cardRepo.save(card);
   }
 

@@ -26,22 +26,22 @@ export class Card {
 
   @ApiProperty({ example: '2024-01-01' })
   @CreateDateColumn()
-  createDate: Date;
+  createDate: string;
 
   @ApiProperty({ example: '2025-01-01' })
-  @Column('date')
-  expiryDate: Date;
+  @Column('date', { nullable: true })
+  expiryDate: string;
 
   @ApiProperty({ example: 10000 })
-  @Column('float')
+  @Column('float', { nullable: true })
   balance: number;
 
   @ApiProperty({ example: 5000 })
-  @Column('float')
+  @Column('float', { nullable: true })
   totalRemaining: number;
 
   @ApiProperty({ example: true })
-  @Column()
+  @Column({ nullable: true })
   status: boolean;
 
   @ApiProperty({ type: () => Category })

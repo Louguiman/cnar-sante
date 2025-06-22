@@ -4,9 +4,11 @@ import { PartnersController } from './partners.controller';
 import { PartnersService } from './partners.service';
 import { Partner } from './entities/partner.entity';
 import { AuthModule } from '../auth/auth.module';
+import { User } from '../users/entities/user.entity';
+import { Service } from '../services/entities/service.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Partner]), AuthModule],
+  imports: [TypeOrmModule.forFeature([Partner, User, Service]), AuthModule],
   controllers: [PartnersController],
   providers: [PartnersService],
   exports: [PartnersService],

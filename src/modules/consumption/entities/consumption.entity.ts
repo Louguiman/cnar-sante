@@ -25,11 +25,11 @@ export class Consumption {
   warranty: Warranty;
 
   @ApiProperty({ example: 500 })
-  @Column('float')
+  @Column('float', { nullable: true })
   amount: number;
 
   @ApiProperty({ example: 200 })
-  @Column('float')
+  @Column('float', { nullable: true })
   remainingBalance: number;
 
   @ApiProperty({ example: '2024-01-01T00:00:00.000Z' })

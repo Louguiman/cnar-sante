@@ -16,7 +16,7 @@ export class Category {
   id: number;
 
   @ApiProperty({ example: 'General Medicine' })
-  @Column()
+  @Column({ nullable: true })
   name: string;
 
   @ApiProperty({ type: () => [Service] })

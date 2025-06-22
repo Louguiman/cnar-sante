@@ -1,6 +1,12 @@
 // src/modules/structures/dto/create-structure.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateStructureDto {
   @ApiProperty({ description: 'Name of the structure' })
@@ -8,7 +14,13 @@ export class CreateStructureDto {
   @IsString()
   name: string;
 
+  @ApiProperty({ description: 'ID of the user who manages the structure' })
+  @IsNotEmpty()
+  @IsNumber()
+  userId: number;
+
   @ApiProperty({ description: 'Type of the structure' })
+  @IsOptional()
   @IsString()
   type?: string;
 
@@ -34,10 +46,12 @@ export class CreateStructureDto {
   city: string;
 
   @ApiProperty({ description: 'Postal code of the structure location' })
+  @IsOptional()
   @IsString()
   postalCode: string;
 
   @ApiProperty({ description: 'Country where the structure is located' })
+  @IsOptional()
   @IsString()
   country: string;
 
@@ -45,21 +59,26 @@ export class CreateStructureDto {
     description: 'Funding capacity of the structure',
     required: false,
   })
+  @IsOptional()
   fundingCapacity?: number | null; // Optional field, can be null if not applicable
 
   @ApiProperty({ description: 'Website of the structure', required: false })
+  @IsOptional()
   @IsString()
-  website: string;
+  website?: string;
 
   @ApiProperty({ description: 'Logo URL of the structure', required: false })
+  @IsOptional()
   @IsString()
-  logoUrl: string;
+  logoUrl?: string;
 
   @ApiProperty({ description: 'Notes about the structure', required: false })
+  @IsOptional()
   @IsString()
-  notes: string;
+  notes?: string;
 
   @ApiProperty({ description: 'Status of the structure', default: true })
-  @IsString()
+  @IsOptional()
+  @IsBoolean()
   isActive: boolean = true; // Default to true, indicating the structure is active
 }

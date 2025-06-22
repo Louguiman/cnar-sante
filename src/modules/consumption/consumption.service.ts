@@ -26,7 +26,18 @@ export class ConsumptionService {
   async createConsumption(
     createConsumptionDto: CreateConsumptionDto,
   ): Promise<Consumption> {
-    const consumption = this.consumptionRepo.create(createConsumptionDto);
+    const { cardId, warrantyId, ...rest } = createConsumptionDto;
+    const card = await this.cardRepo.findOne({ where: { id: cardId } });
+    if (!card) throw new BadRequestException('Card not found');
+    const warranty = await this.warrantyRepo.findOne({
+      where: { id: warrantyId },
+    });
+    if (!warranty) throw new BadRequestException('Warranty not found');
+    const consumption = this.consumptionRepo.create({
+      ...rest,
+      card,
+      warranty,
+    });
     return this.consumptionRepo.save(consumption);
   }
 
@@ -45,7 +56,23 @@ export class ConsumptionService {
     updateConsumptionDto: UpdateConsumptionDto,
   ): Promise<Consumption> {
     const consumption = await this.findConsumptionById(id);
-    Object.assign(consumption, updateConsumptionDto);
+    const { cardId, warrantyId, ...rest } = updateConsumptionDto;
+
+    // Resolve and assign card if cardId is present
+    if (cardId !== undefined) {
+      const card = await this.cardRepo.findOne({ where: { id: cardId } });
+      if (!card) throw new BadRequestException('Card not found');
+      consumption.card = card;
+    }
+    // Resolve and assign warranty if warrantyId is present
+    if (warrantyId !== undefined) {
+      const warranty = await this.warrantyRepo.findOne({
+        where: { id: warrantyId },
+      });
+      if (!warranty) throw new BadRequestException('Warranty not found');
+      consumption.warranty = warranty;
+    }
+    Object.assign(consumption, rest);
     return this.consumptionRepo.save(consumption);
   }
 

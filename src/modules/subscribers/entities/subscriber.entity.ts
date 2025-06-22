@@ -25,7 +25,7 @@ export class Subscriber {
   user: User;
 
   @ApiProperty({ type: () => Card })
-  @OneToOne(() => Card, (card) => card.id)
+  @OneToOne(() => Card, (card) => card.id, { nullable: true })
   @JoinColumn()
   card: Card;
 
@@ -44,7 +44,7 @@ export class Subscriber {
   address: string;
 
   @ApiProperty({ example: 'Engineer' })
-  @Column()
+  @Column({ nullable: true })
   job: string;
 
   @ApiProperty({ example: '2024-01-01T00:00:00.000Z' })

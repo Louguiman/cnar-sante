@@ -1,21 +1,33 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Warranty } from './entities/warranty.entity';
 import { CreateWarrantyDto } from './dto/create-warranty.dto';
 import { UpdateWarrantyDto } from './dto/update-warranty.dto';
+import { Service } from '../services/entities/service.entity';
 
 @Injectable()
 export class WarrantiesService {
   constructor(
     @InjectRepository(Warranty)
     private readonly warrantyRepo: Repository<Warranty>,
+    @InjectRepository(Service)
+    private readonly serviceRepo: Repository<Service>,
   ) {}
 
   async createWarranty(
     createWarrantyDto: CreateWarrantyDto,
   ): Promise<Warranty> {
-    const warranty = this.warrantyRepo.create(createWarrantyDto);
+    const { serviceId, ...rest } = createWarrantyDto;
+    const service = await this.serviceRepo.findOne({
+      where: { id: serviceId },
+    });
+    if (!service) throw new BadRequestException('Service not found');
+    const warranty = this.warrantyRepo.create({ ...rest, service });
     return this.warrantyRepo.save(warranty);
   }
 
@@ -26,7 +38,7 @@ export class WarrantiesService {
   }
 
   async findAllWarranties(): Promise<Warranty[]> {
-    return this.warrantyRepo.find({ relations: ["service", "category"] }); // Added relations for context
+    return this.warrantyRepo.find({ relations: ['service', 'category'] }); // Added relations for context
   }
 
   async updateWarranty(

@@ -34,47 +34,47 @@ export class Structure {
   users: User[];
 
   @ApiProperty({ example: 'Clinic', required: false })
-  @Column()
+  @Column({ nullable: true })
   type?: string; // e.g., NGO, Foundation, Clinic, Hospital
 
   @ApiProperty({ example: 'Dr. Smith', required: false })
-  @Column()
+  @Column({ nullable: true })
   contactName?: string;
 
   @ApiProperty({ example: 'contact@clinic.com', required: false })
-  @Column()
+  @Column({ nullable: true })
   contactEmail?: string;
 
   @ApiProperty({ example: '+1234567890', required: false })
-  @Column()
+  @Column({ nullable: true })
   contactPhone?: string;
 
   @ApiProperty({ example: 'www.clinic.com', required: false })
-  @Column()
+  @Column({ nullable: true })
   website?: string;
 
   @ApiProperty({ example: '123 Main St', required: false })
-  @Column()
+  @Column({ nullable: true })
   address?: string;
 
   @ApiProperty({ example: 'Algiers', required: false })
-  @Column()
+  @Column({ nullable: true })
   city?: string;
 
   @ApiProperty({ example: '16000', required: false })
-  @Column()
+  @Column({ nullable: true })
   postalCode?: string;
 
   @ApiProperty({ example: 'Algeria', required: false })
-  @Column()
+  @Column({ nullable: true })
   country?: string;
 
   @ApiProperty({ example: 'Some notes about the structure', required: false })
-  @Column()
+  @Column({ nullable: true })
   notes?: string;
 
   @ApiProperty({ example: 5000, required: false })
-  @Column()
+  @Column({ nullable: true })
   fundingCapacity?: number; // Example field from implementation_plan.md
 
   @ApiProperty({ example: true })
