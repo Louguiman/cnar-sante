@@ -9,6 +9,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Card } from '../../cards/entities/card.entity';
 import { Warranty } from '../../warranties/entities/warranty.entity';
+import { Partner } from '../../partners/entities/partner.entity';
 
 @Entity('consumption')
 export class Consumption {
@@ -23,6 +24,12 @@ export class Consumption {
   @ApiProperty({ type: () => Warranty })
   @ManyToOne(() => Warranty, (warranty) => warranty.id)
   warranty: Warranty;
+
+  @ApiProperty({ type: () => Partner, required: false })
+  @ManyToOne(() => Partner, (partner) => partner.consumptions, {
+    nullable: true,
+  })
+  partner?: Partner;
 
   @ApiProperty({ example: 500 })
   @Column('float', { nullable: true })

@@ -45,10 +45,12 @@ export class JwtAuthGuard implements CanActivate {
       request.user = payload;
       return true;
     } catch (error) {
-      // Replace this:
-      // console.log('auth error: ', error);
-      // With this:
       this.logger.error(`Authentication error: ${error.message}`, error.stack);
+      if (error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException(
+          'Your session has expired. Please log in again.',
+        );
+      }
       throw new UnauthorizedException('Invalid or expired token');
     }
   }

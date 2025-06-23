@@ -85,34 +85,45 @@ export class ConsumptionService {
     cardId: number,
     warrantyId: number,
     amount: number,
-  ): Promise<Consumption> {
+    partnerId?: number,
+    serviceId?: number,
+  ): Promise<any> {
     const card = await this.cardRepo.findOne({
       where: { id: cardId },
-      relations: ['category'], // Fetch category for total cap check
+      relations: ['category'],
     });
     if (!card) throw new BadRequestException('Card not found');
 
+    // Use serviceId if provided, otherwise get from warranty
+    let service = undefined;
+    if (serviceId) {
+      service = await this.warrantyRepo.manager
+        .getRepository('Service')
+        .findOne({ where: { id: serviceId } });
+      if (!service) throw new BadRequestException('Service not found');
+    }
+
     const warranty = await this.warrantyRepo.findOne({
       where: { id: warrantyId },
-      relations: ['service', 'category'], // Fetch service and category for limit checks
+      relations: ['service', 'category'],
     });
     if (!warranty) throw new BadRequestException('Warranty not found');
+    if (!service) service = warranty.service;
 
-    // 1️⃣ ✅ Check if card has enough balance
+    // 1️⃣ Check if card has enough balance
     if (card.balance < amount) {
       throw new BadRequestException('Insufficient card balance');
     }
 
-    // 2️⃣ ✅ Check if the amount exceeds the warranty limit
+    // 2️⃣ Check if the amount exceeds the warranty limit (per act)
     if (warranty.limit && amount > warranty.limit) {
       throw new BadRequestException(
         `Exceeds warranty coverage limit (${warranty.limit} FCFA per act)`,
       );
     }
 
-    // 3️⃣ ✅ Check total spent on this warranty for the year
-    const yearStart = new Date(new Date().getFullYear(), 0, 1); // First day of the year
-
+    // 3️⃣ Check total spent on this warranty for the year
+    const yearStart = new Date(new Date().getFullYear(), 0, 1);
     const totalSpentOnWarranty = await this.consumptionRepo
       .createQueryBuilder('consumption')
       .where('consumption.cardId = :cardId', { cardId })
@@ -120,44 +131,113 @@ export class ConsumptionService {
       .andWhere('consumption.createdAt >= :yearStart', { yearStart })
       .select('SUM(consumption.amount)', 'total')
       .getRawOne();
-
-    const totalSpent = totalSpentOnWarranty?.total || 0;
+    const totalSpent = Number(totalSpentOnWarranty?.total) || 0;
     if (warranty.limit && totalSpent + amount > warranty.limit) {
       throw new BadRequestException(
         `This warranty has an annual limit of ${warranty.limit} FCFA`,
       );
     }
 
-    // 4️⃣ ✅ Check category-level cap (200,000 FCFA for minors, 500,000+ for adults)
+    // 4️⃣ Check service limit and limitType
+    if (service && service.limit && service.limitType) {
+      let serviceWindowStart: Date | undefined;
+      if (service.limitType === 'per year') {
+        serviceWindowStart = new Date(new Date().getFullYear(), 0, 1);
+      } else if (service.limitType === 'per day') {
+        const now = new Date();
+        serviceWindowStart = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+        );
+      } // Add more limit types as needed
+      let totalServiceSpent = 0;
+      if (serviceWindowStart) {
+        const res = await this.consumptionRepo
+          .createQueryBuilder('consumption')
+          .where('consumption.cardId = :cardId', { cardId })
+          .andWhere('consumption.warrantyId = :warrantyId', { warrantyId })
+          .andWhere('consumption.createdAt >= :windowStart', {
+            windowStart: serviceWindowStart,
+          })
+          .select('SUM(consumption.amount)', 'total')
+          .getRawOne();
+        totalServiceSpent = Number(res?.total) || 0;
+      }
+      if (service.limitType === 'per act') {
+        if (amount > service.limit) {
+          throw new BadRequestException(
+            `Exceeds service limit (${service.limit} FCFA per act)`,
+          );
+        }
+      } else if (
+        service.limit &&
+        serviceWindowStart &&
+        totalServiceSpent + amount > service.limit
+      ) {
+        throw new BadRequestException(
+          `Service limit exceeded (${service.limit} FCFA for ${service.limitType})`,
+        );
+      }
+    }
+
+    // 4️⃣ Check category-level cap (200,000 FCFA for minors, 500,000+ for adults)
     const totalSpentOnCard = await this.consumptionRepo
       .createQueryBuilder('consumption')
       .where('consumption.cardId = :cardId', { cardId })
       .andWhere('consumption.createdAt >= :yearStart', { yearStart })
       .select('SUM(consumption.amount)', 'total')
       .getRawOne();
-
-    const totalSpentThisYear = totalSpentOnCard?.total || 0;
-    const categoryLimit = card.category.name === 'Mineur' ? 200000 : 500000;
-
+    const totalSpentThisYear = Number(totalSpentOnCard?.total) || 0;
+    const categoryLimit = card.category.name.toLowerCase().includes('mineur')
+      ? 200000
+      : 500000;
     if (totalSpentThisYear + amount > categoryLimit) {
       throw new BadRequestException(
         `Annual spending cap reached (${categoryLimit} FCFA)`,
       );
     }
 
-    // 5️⃣ ✅ Deduct amount from card balance
+    // 5️⃣ Deduct amount from card balance
     card.balance -= amount;
     await this.cardRepo.save(card);
 
-    // 6️⃣ ✅ Log the consumption
+    // 6️⃣ Log the consumption
+    let partner = undefined;
+    if (partnerId) {
+      partner = await this.consumptionRepo.manager
+        .getRepository('Partner')
+        .findOne({ where: { id: partnerId } });
+    }
     const consumption = this.consumptionRepo.create({
       card,
       warranty,
       amount,
       remainingBalance: card.balance,
+      partner,
     });
+    const saved = await this.consumptionRepo.save(consumption);
 
-    return this.consumptionRepo.save(consumption);
+    // 7️⃣ Return a summary
+    return {
+      success: true,
+      message: 'Consumption tracked successfully',
+      consumptionId: saved.id,
+      cardId: card.id,
+      cardNo: card.cardNo,
+      cardBalance: card.balance,
+      warrantyId: warranty.id,
+      warrantyLimit: warranty.limit,
+      warrantyCoverageRate: warranty.coverageRate,
+      service: warranty.service?.name,
+      category: card.category?.name,
+      partner: partner ? { id: partner.id, name: partner.name } : null,
+      amount,
+      remainingBalance: card.balance,
+      totalSpentOnWarranty: totalSpent + amount,
+      totalSpentThisYear: totalSpentThisYear + amount,
+      categoryLimit,
+    };
   }
 
   // 1. Add event-based notifications for consumption (e.g., send alerts when nearing limits).

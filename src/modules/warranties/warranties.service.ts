@@ -9,6 +9,7 @@ import { Warranty } from './entities/warranty.entity';
 import { CreateWarrantyDto } from './dto/create-warranty.dto';
 import { UpdateWarrantyDto } from './dto/update-warranty.dto';
 import { Service } from '../services/entities/service.entity';
+import { LimitType } from '../commons/enums/limit-type.enum';
 
 @Injectable()
 export class WarrantiesService {
@@ -22,12 +23,21 @@ export class WarrantiesService {
   async createWarranty(
     createWarrantyDto: CreateWarrantyDto,
   ): Promise<Warranty> {
-    const { serviceId, ...rest } = createWarrantyDto;
+    const { serviceId, limitType, ...rest } = createWarrantyDto;
     const service = await this.serviceRepo.findOne({
       where: { id: serviceId },
     });
     if (!service) throw new BadRequestException('Service not found');
-    const warranty = this.warrantyRepo.create({ ...rest, service });
+    // Convert limitType string to enum if necessary
+    const enumLimitType =
+      typeof limitType === 'string'
+        ? LimitType[limitType as keyof typeof LimitType]
+        : limitType;
+    const warranty = this.warrantyRepo.create({
+      ...rest,
+      limitType: enumLimitType,
+      service,
+    });
     return this.warrantyRepo.save(warranty);
   }
 

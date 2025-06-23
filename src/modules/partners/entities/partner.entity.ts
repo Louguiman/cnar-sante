@@ -10,6 +10,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 import { Service } from '../../services/entities/service.entity';
+import { Consumption } from '../../consumption/entities/consumption.entity';
 
 @Entity('partners')
 export class Partner {
@@ -29,6 +30,10 @@ export class Partner {
   @ApiProperty({ type: () => [User] })
   @OneToMany(() => User, (user) => user.partner)
   users: User[];
+
+  @ApiProperty({ type: () => Consumption, isArray: true })
+  @OneToMany(() => Consumption, (consumption) => consumption.partner)
+  consumptions: Consumption[];
 
   @ApiProperty({ example: 'pharmacy', required: false })
   @Column({ nullable: true })

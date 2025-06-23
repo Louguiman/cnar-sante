@@ -8,7 +8,12 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiResponse, ApiOperation } from '@nestjs/swagger'; // Add ApiOperation
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiResponse,
+  ApiOperation,
+} from '@nestjs/swagger'; // Add ApiOperation
 import { SubscribersService } from './subscribers.service';
 import { CreateSubscriberDto } from './dto/create-subscriber.dto';
 import { UpdateSubscriberDto } from './dto/update-subscriber.dto';
@@ -32,7 +37,11 @@ export class SubscribersController {
   }
 
   @Get()
-  @ApiResponse({ status: 200, description: 'Successfully retrieved all subscribers.', type: [Subscriber] })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved all subscribers.',
+    type: [Subscriber],
+  })
   @ApiOperation({ summary: 'Retrieve all subscribers' })
   getAllSubscribers(): Promise<Subscriber[]> {
     return this.subscribersService.findAllSubscribers();
@@ -63,5 +72,11 @@ export class SubscribersController {
   @ApiResponse({ status: 404, description: 'Subscriber not found.' })
   deleteSubscriber(@Param('id') id: number): Promise<void> {
     return this.subscribersService.deleteSubscriber(id);
+  }
+
+  @Get(':id/consumptions')
+  @ApiOperation({ summary: 'Get all consumptions for a subscriber' })
+  async getConsumptionsForSubscriber(@Param('id') id: number) {
+    return this.subscribersService.getConsumptionsForSubscriber(id);
   }
 }

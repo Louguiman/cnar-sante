@@ -110,9 +110,19 @@ export class StructuresController {
   }
 
   @Get(':id/subscribers')
-  @ApiOperation({ summary: 'Get subscribers for a structure' })
-  getSubscribersForStructure(@Param('id') id: number) {
-    return this.structuresService.getSubscribersForStructure(id);
+  @ApiOperation({ summary: 'Get paginated subscribers for a structure' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  getSubscribersForStructure(
+    @Param('id') id: number,
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+  ) {
+    return this.structuresService.getSubscribersForStructure(
+      id,
+      Number(page),
+      Number(limit),
+    );
   }
 
   @Get(':id/users')

@@ -20,6 +20,7 @@ import { CreateConsumptionDto } from './dto/create-consumption.dto';
 import { UpdateConsumptionDto } from './dto/update-consumption.dto';
 import { Consumption } from './entities/consumption.entity';
 import { JwtAuthGuard } from 'src/commons/guards/jwt.guard';
+import { TrackConsumptionDto } from './dto/track-consumption.dto';
 
 @ApiTags('Consumption')
 @ApiBearerAuth()
@@ -41,7 +42,11 @@ export class ConsumptionController {
   }
 
   @Get()
-  @ApiResponse({ status: 200, description: 'Successfully retrieved all consumptions.', type: [Consumption] })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved all consumptions.',
+    type: [Consumption],
+  })
   @ApiOperation({ summary: 'Retrieve all consumptions' }) // Added for better Swagger UI
   getAllConsumptions(): Promise<Consumption[]> {
     return this.consumptionService.findAllConsumptions();
@@ -79,25 +84,19 @@ export class ConsumptionController {
   deleteConsumption(@Param('id') id: number): Promise<void> {
     return this.consumptionService.deleteConsumption(id);
   }
-  @Post()
-  @ApiOperation({ summary: 'Track a new consumption on a card' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        cardId: { type: 'number' },
-        warrantyId: { type: 'number' },
-        amount: { type: 'number' },
-      },
-    },
+
+  @Post('track')
+  @ApiOperation({
+    summary: 'Track a new validated consumption on a card (with partner)',
   })
-  async trackConsumption(
-    @Body() body: { cardId: number; warrantyId: number; amount: number },
-  ) {
+  @ApiBody({ type: TrackConsumptionDto })
+  async trackConsumption(@Body() body: TrackConsumptionDto) {
     return this.consumptionService.trackConsumption(
       body.cardId,
       body.warrantyId,
       body.amount,
+      body.partnerId,
+      body.serviceId,
     );
   }
 }

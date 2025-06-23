@@ -11,6 +11,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Category } from '../../categories/entities/category.entity';
 import { Warranty } from '../../warranties/entities/warranty.entity';
 import { Partner } from '../../partners/entities/partner.entity';
+import { LimitType } from '../../commons/enums/limit-type.enum';
 
 @Entity('services')
 export class Service {
@@ -50,9 +51,9 @@ export class Service {
   @Column({ nullable: true })
   code: string | null; // Optional code for the service, e.g., a unique identifier
 
-  @ApiProperty({ example: 'per act', required: false })
-  @Column({ nullable: true })
-  limitType: string | null; // "per act", "per year", etc.
+  @ApiProperty({ example: LimitType.PER_YEAR, enum: LimitType, nullable: true })
+  @Column({ type: 'enum', enum: LimitType, nullable: true })
+  limitType: LimitType | null; // "per act", "per year", etc.
 
   @ApiProperty({ type: () => [Warranty] })
   @OneToMany(() => Warranty, (warranty) => warranty.service)

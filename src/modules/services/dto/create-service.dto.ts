@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsNumber, IsBoolean } from 'class-validator';
 import { Warranty } from 'src/modules/warranties/entities/warranty.entity';
+import { LimitType } from '../../commons/enums/limit-type.enum';
 
 export class CreateServiceDto {
   @ApiProperty({ description: 'Name of the service' })
@@ -23,7 +24,7 @@ export class CreateServiceDto {
     required: false,
   })
   @IsString()
-  limitType?: string | null; // Optional, can be null if not applicable
+  limitType?: LimitType | null; // Optional, can be null if not applicable
 
   @ApiProperty({ description: 'Description of the service', required: false })
   @IsString()

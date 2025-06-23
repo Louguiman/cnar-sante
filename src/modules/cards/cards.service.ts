@@ -32,13 +32,16 @@ export class CardsService {
   }
 
   async findCardById(id: number): Promise<Card> {
-    const card = await this.cardRepo.findOne({ where: { id } });
+    const card = await this.cardRepo.findOne({
+      where: { id },
+      relations: ['subscriber'],
+    });
     if (!card) throw new NotFoundException('Card not found');
     return card;
   }
 
   async findAllCards(): Promise<Card[]> {
-    return this.cardRepo.find();
+    return this.cardRepo.find({ relations: ['subscriber'] });
   }
 
   async updateCard(id: number, cardData: Partial<Card>): Promise<Card> {

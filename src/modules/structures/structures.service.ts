@@ -12,7 +12,6 @@ import { User } from '../users/entities/user.entity';
 import { Subscriber } from '../subscribers/entities/subscriber.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { structuresToCSV, csvToStructures } from './utils/structure-csv.util';
-import { Readable } from 'stream';
 
 @Injectable()
 export class StructuresService {
@@ -92,11 +91,28 @@ export class StructuresService {
     return this.structureRepo.save(structure);
   }
 
-  async getSubscribersForStructure(id: number): Promise<Subscriber[]> {
+  async getSubscribersForStructure(
+    id: number,
+    page = 1,
+    limit = 10,
+  ): Promise<{
+    data: Subscriber[];
+    total: number;
+    page: number;
+    limit: number;
+  }> {
     const structure = await this.findStructureById(id);
-    return this.subscriberRepo.find({
-      where: { structure: { id: structure.id } },
-    });
+    const [data, total] = await this.subscriberRepo
+      .createQueryBuilder('subscriber')
+      .leftJoin('subscriber.structure', 'structure')
+      .leftJoin('subscriber.user', 'user')
+      .leftJoin('subscriber.card', 'card')
+      .select(['subscriber', 'user', 'card'])
+      .where('structure.id = :id', { id: structure.id })
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+    return { data, total, page, limit };
   }
 
   async getUsersForStructure(id: number): Promise<User[]> {

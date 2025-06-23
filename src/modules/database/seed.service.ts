@@ -7,6 +7,7 @@ import { Warranty } from '../warranties/entities/warranty.entity';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/entities/user.entity';
 import { Role } from '../../commons/enums/role.enum';
+import { LimitType } from '../commons/enums/limit-type.enum';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -22,9 +23,9 @@ export class SeedService implements OnModuleInit {
 
   async onModuleInit() {
     this.logger.log('Starting database seeding...');
-    await this.seedCategories();
-    await this.seedServices();
-    await this.seedWarranties();
+    // await this.seedCategories();
+    // await this.seedServices();
+    // await this.seedWarranties();
     await this.seedAdminUser(); // Add this line
     this.logger.log('Database seeding completed.');
   }
@@ -81,7 +82,7 @@ export class SeedService implements OnModuleInit {
         name: 'Consultation généraliste',
         coverageRate: 100,
         limit: 8000,
-        limitType: 'per act',
+        limitType: LimitType.PER_ACT,
         serviceId: 1,
         categoryId: 1,
       },
@@ -89,7 +90,7 @@ export class SeedService implements OnModuleInit {
         name: 'Consultation Spécialiste',
         coverageRate: 100,
         limit: 10000,
-        limitType: 'per act',
+        limitType: LimitType.PER_ACT,
         serviceId: 1,
         categoryId: 1,
       },
@@ -97,7 +98,7 @@ export class SeedService implements OnModuleInit {
         name: 'Visite Généraliste',
         coverageRate: 100,
         limit: 8000,
-        limitType: 'per act',
+        limitType: LimitType.PER_ACT,
         serviceId: 1,
         categoryId: 1,
       },
@@ -105,7 +106,7 @@ export class SeedService implements OnModuleInit {
         name: 'Visite Spécialiste',
         coverageRate: 100,
         limit: 10000,
-        limitType: 'per act',
+        limitType: LimitType.PER_ACT,
         serviceId: 1,
         categoryId: 1,
       },
@@ -113,7 +114,7 @@ export class SeedService implements OnModuleInit {
         name: 'Soins infirmiers (AMI-SF)',
         coverageRate: 100,
         limit: 1000,
-        limitType: 'per act',
+        limitType: LimitType.PER_ACT,
         serviceId: 1,
         categoryId: 1,
       },
@@ -121,7 +122,7 @@ export class SeedService implements OnModuleInit {
         name: 'Plafond annuel',
         coverageRate: 100,
         limit: 200000,
-        limitType: 'per year',
+        limitType: LimitType.PER_YEAR,
         serviceId: 1,
         categoryId: 1,
       },
@@ -130,7 +131,7 @@ export class SeedService implements OnModuleInit {
         name: 'Consultation généraliste',
         coverageRate: 100,
         limit: 8000,
-        limitType: 'per act',
+        limitType: LimitType.PER_ACT,
         serviceId: 2,
         categoryId: 2,
       },
@@ -138,7 +139,7 @@ export class SeedService implements OnModuleInit {
         name: 'Consultation Spécialiste',
         coverageRate: 100,
         limit: 10000,
-        limitType: 'per act',
+        limitType: LimitType.PER_ACT,
         serviceId: 2,
         categoryId: 2,
       },
@@ -146,7 +147,7 @@ export class SeedService implements OnModuleInit {
         name: 'Visite Généraliste',
         coverageRate: 100,
         limit: 8000,
-        limitType: 'per act',
+        limitType: LimitType.PER_ACT,
         serviceId: 2,
         categoryId: 2,
       },
@@ -154,7 +155,7 @@ export class SeedService implements OnModuleInit {
         name: 'Visite Spécialiste',
         coverageRate: 100,
         limit: 10000,
-        limitType: 'per act',
+        limitType: LimitType.PER_ACT,
         serviceId: 2,
         categoryId: 2,
       },
@@ -162,7 +163,7 @@ export class SeedService implements OnModuleInit {
         name: 'Soins infirmiers (AMI-SF)',
         coverageRate: 100,
         limit: 1000,
-        limitType: 'per act',
+        limitType: LimitType.PER_ACT,
         serviceId: 2,
         categoryId: 2,
       },
@@ -170,7 +171,7 @@ export class SeedService implements OnModuleInit {
         name: 'Plafond annuel',
         coverageRate: 100,
         limit: 200000,
-        limitType: 'per year',
+        limitType: LimitType.PER_YEAR,
         serviceId: 2,
         categoryId: 2,
       },

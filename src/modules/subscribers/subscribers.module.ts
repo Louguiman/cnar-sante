@@ -7,10 +7,11 @@ import { AuthModule } from '../auth/auth.module';
 import { User } from '../users/entities/user.entity';
 import { Card } from '../cards/entities/card.entity';
 import { Structure } from '../structures/entities/structure.entity';
+import { Consumption } from '../consumption/entities/consumption.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Subscriber, User, Card, Structure]),
+    TypeOrmModule.forFeature([Subscriber, User, Card, Structure, Consumption]),
     AuthModule,
   ],
   controllers: [SubscribersController],

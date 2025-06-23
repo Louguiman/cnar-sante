@@ -11,6 +11,7 @@ import { UpdateSubscriberDto } from './dto/update-subscriber.dto';
 import { User } from '../users/entities/user.entity';
 import { Card } from '../cards/entities/card.entity';
 import { Structure } from '../structures/entities/structure.entity';
+import { Consumption } from '../consumption/entities/consumption.entity';
 
 @Injectable()
 export class SubscribersService {
@@ -23,6 +24,8 @@ export class SubscribersService {
     private readonly cardRepo: Repository<Card>,
     @InjectRepository(Structure)
     private readonly structureRepo: Repository<Structure>,
+    @InjectRepository(Consumption)
+    private readonly consumptionRepo: Repository<Consumption>,
   ) {}
 
   async createSubscriber(
@@ -89,5 +92,19 @@ export class SubscribersService {
   async deleteSubscriber(id: number): Promise<void> {
     const subscriber = await this.findSubscriberById(id);
     await this.subscriberRepo.remove(subscriber);
+  }
+
+  async getConsumptionsForSubscriber(subscriberId: number) {
+    // Find the subscriber and their card
+    const subscriber = await this.subscriberRepo.findOne({
+      where: { id: subscriberId },
+      relations: ['card'],
+    });
+    if (!subscriber || !subscriber.card) return [];
+    // Find all consumptions for the card
+    return this.consumptionRepo.find({
+      where: { card: { id: subscriber.card.id } },
+      relations: ['warranty', 'card'],
+    });
   }
 }
