@@ -44,13 +44,10 @@ export class ServicesController {
   }
 
   @Get()
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully retrieved all services.',
-    type: [Service],
-  })
-  @ApiOperation({ summary: 'Retrieve all services' }) // Added for better Swagger UI
-  getAllServices(): Promise<Service[]> {
+  getAllServices(@Query('partnerId') partnerId?: number): Promise<Service[]> {
+    if (partnerId) {
+      return this.servicesService.findServicesByPartner(partnerId);
+    }
     return this.servicesService.findAllServices();
   }
 

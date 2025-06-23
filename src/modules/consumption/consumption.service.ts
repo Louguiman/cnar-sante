@@ -248,4 +248,11 @@ export class ConsumptionService {
       console.log(`Card ${card.cardNo} is running low on balance.`);
     }
   }
+
+  async findConsumptionsByPartner(partnerId: number): Promise<Consumption[]> {
+    return this.consumptionRepo.find({
+      where: { partner: { id: partnerId } },
+      relations: ['card', 'warranty', 'partner'],
+    });
+  }
 }

@@ -7,6 +7,8 @@ import {
   Param,
   Body,
   UseGuards,
+  Query,
+  Req,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -37,14 +39,18 @@ export class SubscribersController {
   }
 
   @Get()
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully retrieved all subscribers.',
-    type: [Subscriber],
-  })
-  @ApiOperation({ summary: 'Retrieve all subscribers' })
-  getAllSubscribers(): Promise<Subscriber[]> {
+  getAllSubscribers(
+    @Query('structureId') structureId?: number,
+  ): Promise<Subscriber[]> {
+    if (structureId) {
+      return this.subscribersService.findSubscribersByStructure(structureId);
+    }
     return this.subscribersService.findAllSubscribers();
+  }
+
+  @Get('me')
+  getMe(@Req() req): Promise<Subscriber> {
+    return this.subscribersService.findSubscriberByUserId(req.user.id);
   }
 
   @Get(':id')

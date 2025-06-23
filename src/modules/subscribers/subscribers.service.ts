@@ -107,4 +107,20 @@ export class SubscribersService {
       relations: ['warranty', 'card'],
     });
   }
+
+  async findSubscribersByStructure(structureId: number): Promise<Subscriber[]> {
+    return this.subscriberRepo.find({
+      where: { structure: { id: structureId } },
+      relations: ['structure'],
+    });
+  }
+
+  async findSubscriberByUserId(userId: number): Promise<Subscriber> {
+    const subscriber = await this.subscriberRepo.findOne({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
+    if (!subscriber) throw new NotFoundException('Subscriber not found');
+    return subscriber;
+  }
 }

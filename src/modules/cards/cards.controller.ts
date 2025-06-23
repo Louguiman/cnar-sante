@@ -37,8 +37,10 @@ export class CardsController {
   }
 
   @Get()
-  @ApiResponse({ status: 200, description: 'Successfully retrieved all cards.', type: [Card] })
-  getAllCards(): Promise<Card[]> {
+  getAllCards(@Query('structureId') structureId?: number): Promise<Card[]> {
+    if (structureId) {
+      return this.cardsService.findCardsByStructure(structureId);
+    }
     return this.cardsService.findAllCards();
   }
 

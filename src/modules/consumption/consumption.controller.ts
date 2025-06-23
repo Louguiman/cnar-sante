@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -42,13 +43,12 @@ export class ConsumptionController {
   }
 
   @Get()
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully retrieved all consumptions.',
-    type: [Consumption],
-  })
-  @ApiOperation({ summary: 'Retrieve all consumptions' }) // Added for better Swagger UI
-  getAllConsumptions(): Promise<Consumption[]> {
+  getAllConsumptions(
+    @Query('partnerId') partnerId?: number,
+  ): Promise<Consumption[]> {
+    if (partnerId) {
+      return this.consumptionService.findConsumptionsByPartner(partnerId);
+    }
     return this.consumptionService.findAllConsumptions();
   }
 

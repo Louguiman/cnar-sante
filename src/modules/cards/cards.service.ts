@@ -64,4 +64,12 @@ export class CardsService {
 
     return this.cardRepo.save(card);
   }
+
+  async findCardsByStructure(structureId: number): Promise<Card[]> {
+    return this.cardRepo
+      .createQueryBuilder('card')
+      .leftJoinAndSelect('card.subscriber', 'subscriber')
+      .where('subscriber.structureId = :structureId', { structureId })
+      .getMany();
+  }
 }

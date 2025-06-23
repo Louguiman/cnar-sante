@@ -158,4 +158,12 @@ export class ServicesService {
       .getRawMany();
     return { total, active, inactive, byCategory };
   }
+
+  async findServicesByPartner(partnerId: number): Promise<Service[]> {
+    return this.serviceRepo
+      .createQueryBuilder('service')
+      .leftJoin('service.partners', 'partner')
+      .where('partner.id = :partnerId', { partnerId })
+      .getMany();
+  }
 }
