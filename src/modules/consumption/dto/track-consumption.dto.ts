@@ -2,9 +2,9 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional } from 'class-validator';
 
 export class TrackConsumptionDto {
-  @ApiProperty({ example: 1 })
+  @ApiProperty({ example: '1234567890' })
   @IsNumber()
-  cardId: number;
+  cardNo: number;
 
   @ApiProperty({ example: 1 })
   @IsNumber()

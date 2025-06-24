@@ -82,14 +82,14 @@ export class ConsumptionService {
   }
 
   async trackConsumption(
-    cardId: number,
+    cardNo: number,
     warrantyId: number,
     amount: number,
     partnerId?: number,
     serviceId?: number,
   ): Promise<any> {
     const card = await this.cardRepo.findOne({
-      where: { id: cardId },
+      where: { cardNo: String(cardNo) },
       relations: ['category'],
     });
     if (!card) throw new BadRequestException('Card not found');
@@ -126,7 +126,7 @@ export class ConsumptionService {
     const yearStart = new Date(new Date().getFullYear(), 0, 1);
     const totalSpentOnWarranty = await this.consumptionRepo
       .createQueryBuilder('consumption')
-      .where('consumption.cardId = :cardId', { cardId })
+      .where('consumption.cardId = :cardId', { cardId: card.id })
       .andWhere('consumption.warrantyId = :warrantyId', { warrantyId })
       .andWhere('consumption.createdAt >= :yearStart', { yearStart })
       .select('SUM(consumption.amount)', 'total')
@@ -155,7 +155,7 @@ export class ConsumptionService {
       if (serviceWindowStart) {
         const res = await this.consumptionRepo
           .createQueryBuilder('consumption')
-          .where('consumption.cardId = :cardId', { cardId })
+          .where('consumption.cardId = :cardId', { cardId: card.id })
           .andWhere('consumption.warrantyId = :warrantyId', { warrantyId })
           .andWhere('consumption.createdAt >= :windowStart', {
             windowStart: serviceWindowStart,
@@ -184,7 +184,7 @@ export class ConsumptionService {
     // 4️⃣ Check category-level cap (200,000 FCFA for minors, 500,000+ for adults)
     const totalSpentOnCard = await this.consumptionRepo
       .createQueryBuilder('consumption')
-      .where('consumption.cardId = :cardId', { cardId })
+      .where('consumption.cardId = :cardId', { cardId: card.id })
       .andWhere('consumption.createdAt >= :yearStart', { yearStart })
       .select('SUM(consumption.amount)', 'total')
       .getRawOne();

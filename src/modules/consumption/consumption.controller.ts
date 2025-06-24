@@ -92,7 +92,7 @@ export class ConsumptionController {
   @ApiBody({ type: TrackConsumptionDto })
   async trackConsumption(@Body() body: TrackConsumptionDto) {
     return this.consumptionService.trackConsumption(
-      body.cardId,
+      body.cardNo,
       body.warrantyId,
       body.amount,
       body.partnerId,
