@@ -40,8 +40,10 @@ async function bootstrap() {
   // Global validation pipe
 
   //TODO: USE IN PROD
-  //app.enableCors({origin:'https://djiguiya.sankaretech.com', });
-  app.enableCors();
+  app.enableCors({ origin: 'https://djiguiya.sankaretech.com' });
+
+  //DEV MODE
+  // app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new LoggingInterceptor());
 
