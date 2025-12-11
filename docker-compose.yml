@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   api:
     build: .
@@ -30,7 +28,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     volumes: 
-      - db_data:/var/lib/postgresql/data # Ensure PostgreSQL data is persisted
+      - db_data:/var/lib/postgresql # Updated mount point
 
 volumes: 
   db_data:
+
