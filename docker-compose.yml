@@ -3,7 +3,7 @@ services:
     build: .
     container_name: djiguiya_backend
     ports:
-      - '3000:3001'
+      - '3001:3000'
     environment:
       DATABASE_HOST: db
       DATABASE_PORT: 5432
@@ -32,5 +32,6 @@ services:
 
 volumes: 
   db_data:
+
 
 
