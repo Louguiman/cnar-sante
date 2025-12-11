@@ -35,7 +35,7 @@ import { UsersModule } from '../users/users.module';
           password: configService.get<string>('DATABASE_PASSWORD'),
           database: configService.get<string>('DATABASE_NAME'),
           autoLoadEntities: true,
-          ssl: { rejectUnauthorized: false }, // Ensure ssl is also in fallback
+          ssl: false, // Ensure ssl is also in fallback
           synchronize: true, // Consider disabling synchronize in production
         };
       },
