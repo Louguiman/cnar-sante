@@ -22,16 +22,22 @@ services:
     image: postgres
     container_name: djiguiya_db
     ports:
-      - '5432:5432'
+      - '127.0.0.1:5432:5432' # Good practice: keep it local
     environment: 
       POSTGRES_DB: djiguiya
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     volumes: 
-      - db_data:/var/lib/postgresql # Updated mount point
+      - db_data:/var/lib/postgresql/data # <--- FIXED PATH
+    healthcheck: # Optional: Helps the API know when DB is actually ready
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes: 
   db_data:
+
 
 
 
