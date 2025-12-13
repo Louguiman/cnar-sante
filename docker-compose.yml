@@ -37,7 +37,7 @@ services:
       POSTGRES_PASSWORD: password
     volumes: 
       # Named Volume for Persistent Data and Dokploy Backups
-      - db_data:/var/lib/postgresql/data 
+      - db_data:/var/lib/postgresql 
     networks:
       - djiguiya-net 
     healthcheck: 
@@ -55,3 +55,4 @@ networks:
   # Defines the custom network for reliable service communication
   djiguiya-net:
     driver: bridge
+
