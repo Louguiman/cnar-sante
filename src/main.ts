@@ -39,9 +39,18 @@ async function bootstrap() {
   // app.use(doubleCsrfProtection);
   // Global validation pipe
 
-  //TODO: USE IN PROD
-  app.enableCors({ origin: 'https://djiguiya.sankaretech.com' });
+const allowedOrigins = [
+  'https://djiguiya.sankaretech.com', // Production Frontend
+  'https://djiguiya-sante.cnarsugu.com',
+  'https://app.cnarsante.com/'  
+  // Add any other domains that need to access your API
+];
 
+app.enableCors({
+  origin: allowedOrigins,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+});
   //DEV MODE
   // app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
