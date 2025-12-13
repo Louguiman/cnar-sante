@@ -3,9 +3,11 @@ services:
     build: .
     container_name: djiguiya_backend
     ports:
-      - '3001:3000'
+      # Expose API port to the host/load balancer
+      - '3001:3000' 
     environment:
-      NODE_OPTIONS: --dns-result-order=ipv4first # <--- ADD THIS LINE
+      # Fix for Node.js DNS flakiness on startup
+      NODE_OPTIONS: --dns-result-order=ipv4first
       DATABASE_HOST: db
       DATABASE_PORT: 5432
       DATABASE_USERNAME: postgres
@@ -13,46 +15,43 @@ services:
       DATABASE_NAME: djiguiya
       JWT_SECRET: supersecretkey
     volumes:
-      - ./src:/usr/src/app/src # Sync local source files to container
-      # - ./package.json:/usr/src/app/package.json # Ensure changes to package.json are reflected
-      # - ./package-lock.json:/usr/src/app/package-lock.json # Optional, if lockfile changes need to sync
+      # Sync local source files (for development/hot-reloading)
+      - ./src:/usr/src/app/src 
+    # Use external DNS as a fallback (optional, but good for internal stability)
     dns:
-      - 1.1.1.1 # Cloudflare DNS
+      - 1.1.1.1 
     networks:
-      - djiguiya-net # <-- Assign to new network
+      - djiguiya-net 
     depends_on:
+      # Wait for the DB to pass its healthcheck before starting the API
       db:
-        condition: service_healthy # <-- KEY CHANGE
+        condition: service_healthy 
 
   db:
     image: postgres
     container_name: djiguiya_db
+    # *** PORT MAPPING REMOVED *** # The API connects over the internal network, no need to expose port 5432 to the public host.
     environment: 
       POSTGRES_DB: djiguiya
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     volumes: 
-      - db_data:/var/lib/postgresql/data # <--- FIXED PATH
+      # Named Volume for Persistent Data and Dokploy Backups
+      - db_data:/var/lib/postgresql/data 
     networks:
-      - djiguiya-net # <-- Assign to new network
-    healthcheck: # Optional: Helps the API know when DB is actually ready
+      - djiguiya-net 
+    healthcheck: 
+      # Check if Postgres is ready to accept connections
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
 
 volumes: 
+  # Defines the named volume managed by Docker/Dokploy
   db_data:
-networks: # <-- NEW BLOCK AT BOTTOM
+
+networks: 
+  # Defines the custom network for reliable service communication
   djiguiya-net:
     driver: bridge
-
-
-
-
-
-
-
-
-
-
