@@ -23,9 +23,9 @@ export class SeedService implements OnModuleInit {
 
   async onModuleInit() {
     this.logger.log('Starting database seeding...');
-    // await this.seedCategories();
-    // await this.seedServices();
-    // await this.seedWarranties();
+    await this.seedCategories();
+    await this.seedServices();
+    await this.seedWarranties();
     await this.seedAdminUser(); // Add this line
     this.logger.log('Database seeding completed.');
   }
