@@ -17,14 +17,13 @@ services:
       - ./src:/usr/src/app/src # Sync local source files to container
       # - ./package.json:/usr/src/app/package.json # Ensure changes to package.json are reflected
       # - ./package-lock.json:/usr/src/app/package-lock.json # Optional, if lockfile changes need to sync
-    depends_on: 
-      - db
+    depends_on:
+      db:
+        condition: service_healthy # <-- KEY CHANGE
 
   db:
     image: postgres
     container_name: djiguiya_db
-    ports:
-      - '127.0.0.1:5432:5432' # Good practice: keep it local
     environment: 
       POSTGRES_DB: djiguiya
       POSTGRES_USER: postgres
@@ -39,6 +38,7 @@ services:
 
 volumes: 
   db_data:
+
 
 
 
