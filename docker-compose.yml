@@ -5,6 +5,7 @@ services:
     ports:
       - '3001:3000'
     environment:
+      NODE_OPTIONS: --dns-result-order=ipv4first # <--- ADD THIS LINE
       DATABASE_HOST: db
       DATABASE_PORT: 5432
       DATABASE_USERNAME: postgres
@@ -36,6 +37,7 @@ services:
 
 volumes: 
   db_data:
+
 
 
 
