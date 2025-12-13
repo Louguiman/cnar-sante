@@ -16,6 +16,8 @@ services:
       - ./src:/usr/src/app/src # Sync local source files to container
       # - ./package.json:/usr/src/app/package.json # Ensure changes to package.json are reflected
       # - ./package-lock.json:/usr/src/app/package-lock.json # Optional, if lockfile changes need to sync
+    dns:
+      - 1.1.1.1 # Cloudflare DNS
     depends_on:
       db:
         condition: service_healthy # <-- KEY CHANGE
@@ -37,6 +39,7 @@ services:
 
 volumes: 
   db_data:
+
 
 
 
